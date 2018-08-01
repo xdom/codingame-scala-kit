@@ -36,7 +36,9 @@ case class Bundler(fileName: String, io: BundlerIo) {
   }
 
   def transformFile(file: File): List[String] = {
-    val allFiles = filesList(List(file), Map.empty).distinct
+    val allFiles = filesList(List(file), Map.empty)
+      .map(_.getCanonicalFile)
+      .distinct
     val packageContents = allFiles.foldLeft(Map.empty[String, String]) {
       case (contents, `file`) => transformSingleFile(file, contents, forceToRoot = true)
       case (contents, otherFile) => transformSingleFile(otherFile, contents)
